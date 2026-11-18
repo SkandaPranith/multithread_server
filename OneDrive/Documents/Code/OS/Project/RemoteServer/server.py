@@ -26,6 +26,8 @@ class WebServer:
     def start(self):
         self.server_sock.bind((self.host, self.port))
         self.server_sock.listen(128)
+        # Timeout allows Windows OS to periodically unblock accept() and catch Ctrl+C
+        self.server_sock.settimeout(1.0)
         self.running = True
 
         print("=" * 60)
@@ -41,6 +43,8 @@ class WebServer:
             while self.running:
                 try:
                     client_sock, client_addr = self.server_sock.accept()
+                except TimeoutError:
+                    continue  # Ticks every 1s so Ctrl+C is caught immediately!
                 except OSError:
                     break  # Socket closed during shutdown
 

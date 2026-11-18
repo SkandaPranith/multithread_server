@@ -41,7 +41,12 @@ def main():
         sys.exit(0)
 
     signal.signal(signal.SIGINT, handle_sigint)
-    server.start()
+
+    try:
+        server.start()
+    except KeyboardInterrupt:
+        server.stop()
+        sys.exit(0)
 
 
 if __name__ == "__main__":
